@@ -1,0 +1,54 @@
+program Test ;
+//.\compiler.exe d:\code\c++\test.txt
+const int i1=20,i2=30,i3=40,;             //错误：i3从未使用
+float x,y,w;                             //错误：x,y从未使用
+float X1,x1;                             //错误：x1重复定义, x1未使用
+
+def Test1  (int i2)       
+begin
+   int i1, I3;
+   let xx=i1+i2*(((i3-100)/(ii-I1)));          //错误：xx、ii未定义
+end
+
+def Test1 (int x, float y, float Z)                           //错误：X、Y从未使用
+begin
+    float  i1,i2;                                             //错误：i2从未使用
+    int A, B, F, i1;                                            //错误：变量i1重复定义
+	float c,d;
+	
+    if  A+B*(C+D/(A-B)) > (A+B)*w or Z>i1 and C<>D then   
+        if A<B then 
+			begin 
+			   int A,x,s,t;  
+               int t；       //错误：变量t重复定义
+                                                                           
+			end
+		else 
+		    let F=A; 
+            let s=20;                                                 //错误：s未定义
+		fi           
+	else 
+       return;
+    fi
+
+    if  A1+B>C1  then                 //错误：A1、C1未定义
+         int A1;                      //错误：A1从未使用
+    fi
+
+
+end
+
+def Test2 (int X, float y)    
+begin
+   call  Test1(x+y*10);            
+   call  Test1(10*i1,34.5,x/i1+i2);
+
+   call  Test1(x+yy*10);                          //错误：yy未定义
+   call   Test1();                                            //错误：函数未定义就使用，或未找到符合参数数目的Test1函数
+   call  aaa();                                               //错误：函数未定义就使用
+
+end
+
+def  Test1  (int y)         //错误：函数Test1重复定义
+begin
+end

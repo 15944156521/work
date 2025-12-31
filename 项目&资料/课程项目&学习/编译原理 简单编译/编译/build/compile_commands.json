@@ -1,0 +1,14 @@
+[
+{
+  "directory": "D:/code/c++/build",
+  "command": "D:\\xi\\mingw64\\bin\\g++.exe   -g -std=gnu++14 -o CMakeFiles\\compiler.dir\\main.cpp.obj -c D:\\code\\c++\\ex3\\main.cpp",
+  "file": "D:/code/c++/ex3/main.cpp",
+  "output": "CMakeFiles/compiler.dir/main.cpp.obj"
+},
+{
+  "directory": "D:/code/c++/build",
+  "command": "D:\\xi\\mingw64\\bin\\g++.exe   -g -std=gnu++14 -o CMakeFiles\\compiler.dir\\lexicalAnalysis.cpp.obj -c D:\\code\\c++\\ex3\\lexicalAnalysis.cpp",
+  "file": "D:/code/c++/ex3/lexicalAnalysis.cpp",
+  "output": "CMakeFiles/compiler.dir/lexicalAnalysis.cpp.obj"
+}
+]

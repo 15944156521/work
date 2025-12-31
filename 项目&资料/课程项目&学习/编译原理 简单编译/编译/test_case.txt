@@ -1,0 +1,50 @@
+program Test ;
+//.\compiler.exe d:\code\c++\test_case.txt
+
+
+const int i1=20,I2=30,I3=40;   //全局常量定义
+
+def Test1  (int X)       //测试四则运算的四元式
+begin
+   let x=i1+i2*(((i3-100)/(i4-i1)));
+end
+
+def Test1  (int X, float Y, float Z) //
+begin
+
+    int F;
+	float a,b,c,d, m,N, p,k;
+	
+    if  A+B*(C+D/(A-B)) > (A+B)*C or x>I1 and C<>D then   
+        if A<B then 
+			begin 
+			   int s,t;
+			   let s=y+t; 
+			end
+		else 
+		    let F=z; 
+		fi           
+	else 
+       return;
+    fi
+
+	if a>b and c<d or m<n then 
+		begin
+		  if a>b then let m=k*d; fi;;
+		end
+	else
+	  while a>b or c<d do
+	  begin
+		let p=n*k;
+	  end
+	  endwh
+	fi
+
+
+end
+
+def Test2 (int X, float y)    //测试函数调用四元式
+begin
+   call  Test1(x+y);
+   call  Test1(10*i1,34.5,x/i1+i2);
+end
