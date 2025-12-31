@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>棋盘格+二十面体 AR 网页版</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        html, body { height: 100%; width: 100%; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f6f8fa; margin: 0; height: 100vh; width: 100vw; }
+        .container { width: 100vw; min-height: 100vh; margin: 0; background: #fff; border-radius: 0; box-shadow: none; padding: 36px 2vw 36px 2vw; box-sizing: border-box; }
+        h1 { font-size: 2.2em; margin-bottom: 18px; color: #17407e; }
+        .desc { color: #17407e; font-size: 1.15em; margin-bottom: 18px; }
+        .upload-block { margin-bottom: 24px; }
+        .preview-list { display: flex; flex-wrap: wrap; gap: 12px; margin: 12px 0; }
+        .preview-list img { max-width: 180px; border-radius: 8px; box-shadow: 0 1px 6px #0002; cursor: pointer; transition: transform 0.2s; }
+        .preview-list img:hover { transform: scale(1.08); }
+        .camera-block { margin: 18px 0; }
+        .camera-preview-bg { width: 240px; height: 180px; background: linear-gradient(135deg,#e3eaf7 60%,#cfd8dc 100%); border-radius: 8px; box-shadow: 0 1px 6px #0002; display: flex; align-items: center; justify-content: center; color: #888; font-size: 1.1em; position: absolute; left: 0; top: 0; }
+        .camera-preview { width: 240px; height: 180px; border-radius: 8px; box-shadow: 0 1px 6px #0002; background: #222; position: absolute; left: 0; top: 0; display: none; }
+        .camera-preview-wrap { position: relative; width: 240px; height: 180px; }
+        .result-history { margin-top: 32px; }
+        .result-list { display: flex; flex-wrap: wrap; gap: 18px; margin: 18px 0; }
+        .result-list img { max-width: 180px; border-radius: 8px; box-shadow: 0 1px 8px #0002; cursor: pointer; transition: transform 0.2s; }
+        .result-list img:hover { transform: scale(1.08); }
+        .btn { background: #1976d2; color: #fff; border: none; border-radius: 6px; padding: 8px 24px; font-size: 1em; cursor: pointer; margin: 12px 0; }
+        .btn:hover { background: #125ea2; }
+        .btn-secondary { background: #fff; color: #1976d2; border: 2px solid #1976d2; }
+        .btn-secondary:hover { background: #e3eaf7; }
+        @media (max-width: 900px) {
+            .container { padding: 12px 2vw 12px 2vw; }
+            .preview-list img, .result-list img { max-width: 90vw; }
+        }
+    </style>
+    <script>
+let capturedImages = [];
+let cameraStream = null;
+
+function previewImages() {
+        var preview = document.getElementById('preview');
+        preview.innerHTML = '';
+        var files = document.getElementById('file-input').files;
+        for (let i = 0; i < files.length; i++) {
+            let img = document.createElement('img');
+            img.onclick = function() { window.open(img.src, '_blank'); };
+            img.src = URL.createObjectURL(files[i]);
+            preview.appendChild(img);
+        }
+        // 预览摄像头拍照的图片
+        for (let i = 0; i < capturedImages.length; i++) {
+            let img = document.createElement('img');
+            img.src = capturedImages[i];
+            img.onclick = function() { window.open(img.src, '_blank'); };
+            preview.appendChild(img);
+        }
+    }
+
+    function startCamera() {
+        const video = document.getElementById('camera-video');
+        const bg = document.getElementById('camera-bg');
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                cameraStream = stream;
+                video.srcObject = stream;
+                video.setAttribute('playsinline', true); // 兼容移动端
+                video.style.display = 'block';
+                bg.style.display = 'none';
+                video.play();
+                // 检查是否能正常获取到画面
+                setTimeout(() => {
+                    if (video.videoWidth === 0) {
+                        alert('摄像头已打开但无画面，建议刷新页面或更换浏览器。');
+                    }
+                }, 1500);
+            })
+            .catch(err => {
+                alert('无法打开摄像头，请检查浏览器权限设置。');
+                video.style.display = 'none';
+                bg.style.display = '';
+            });
+    }
+
+    function stopCamera() {
+        const video = document.getElementById('camera-video');
+        const bg = document.getElementById('camera-bg');
+        if (cameraStream) {
+            let tracks = cameraStream.getTracks();
+            tracks.forEach(track => track.stop());
+            cameraStream = null;
+        }
+        video.pause();
+        video.srcObject = null;
+        video.style.display = 'none';
+        bg.style.display = '';
+    }
+
+    function capturePhoto() {
+        const video = document.getElementById('camera-video');
+        if (video.style.display === 'none') return;
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const dataUrl = canvas.toDataURL('image/jpeg');
+        capturedImages.push(dataUrl);
+        previewImages();
+    }
+
+    function beforeSubmit() {
+        // 把拍照的图片转成blob加到formData
+        const form = document.getElementById('upload-form');
+        const input = document.getElementById('file-input');
+        const dt = new DataTransfer();
+        // 原有文件
+        for (let i = 0; i < input.files.length; i++) {
+            dt.items.add(input.files[i]);
+        }
+        // 拍照图片
+        for (let i = 0; i < capturedImages.length; i++) {
+            let arr = capturedImages[i].split(','), mime = arr[0].match(/:(.*?);/)[1],
+                bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+            while(n--) u8arr[n] = bstr.charCodeAt(n);
+            let file = new File([u8arr], 'camera_'+Date.now()+'_'+i+'.jpg', {type:mime});
+            dt.items.add(file);
+        }
+        input.files = dt.files;
+        return true;
+    }
+
+    function gotoHistory() {
+        window.location.href = "/all_results";
+    }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>棋盘格 + 二十面体 AR 网页版</h1>
+        <div class="desc">
+            支持批量上传和摄像头拍照，渲染结果可在下页批量预览与下载。建议上传20-30张不同角度/距离的棋盘格照片。
+        </div>
+        <form id="upload-form" method="post" enctype="multipart/form-data" class="upload-block" onsubmit="return beforeSubmit();">
+            <input id="file-input" type="file" name="file" accept="image/*" multiple required onchange="previewImages()">
+            <div id="preview" class="preview-list"></div>
+            <div class="camera-block">
+                <div class="camera-preview-wrap">
+                    <div id="camera-bg" class="camera-preview-bg">摄像头未开启</div>
+                    <video id="camera-video" class="camera-preview" autoplay muted playsinline style="display:none;"></video>
+                </div>
+                <br>
+                <button type="button" class="btn" onclick="startCamera()">打开摄像头</button>
+                <button type="button" class="btn" onclick="capturePhoto()">拍照并加入上传</button>
+                <button type="button" class="btn btn-secondary" onclick="stopCamera()">关闭摄像头</button>
+            </div>
+            <label>选择AR物体类型：</label>
+            <select name="render_type">
+                <option value="icosahedron">二十面体</option>
+                <option value="cube">立方体</option>
+                <option value="mesh">自定义Mesh模型</option>
+            </select>
+            <br>
+            <label>上传Mesh模型（.obj/.stl，可选）：</label>
+            <input type="file" name="mesh_path" accept=".obj,.stl">
+            <br>
+            <input type="submit" class="btn" value="上传并渲染">
+        </form>
+        <div class="result-history">
+            <h2>历史渲染结果预览</h2>
+            <button class="btn btn-secondary" onclick="gotoHistory()">查看全部渲染结果</button>
+            <div class="result-list">
+                {% for img_file in img_files[:6] %}
+                    <a href="{{ url_for('result_img', filename=img_file) }}" download>
+                        <img src="{{ url_for('result_img', filename=img_file) }}" title="点击下载或放大" onclick="window.open(this.src, '_blank');">
+                    </a>
+                {% endfor %}
+                {% if not img_files %}
+                    <span style="color:#aaa;">暂无历史渲染结果</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

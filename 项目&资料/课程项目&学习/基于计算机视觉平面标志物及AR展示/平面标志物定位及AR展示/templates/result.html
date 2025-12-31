@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AR渲染结果</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        html, body { height: 100%; width: 100%; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f6f8fa; margin: 0; height: 100vh; width: 100vw; }
+        .container { width: 100vw; min-height: 100vh; margin: 0; background: #fff; border-radius: 0; box-shadow: none; padding: 36px 2vw 36px 2vw; box-sizing: border-box; }
+        h1 { font-size: 2.2em; margin-bottom: 18px; color: #17407e; }
+        .desc { color: #17407e; font-size: 1.15em; margin-bottom: 18px; }
+        .move-btns { margin: 18px 0; text-align: center; }
+        .move-btns button { margin: 0 6px; padding: 6px 20px; font-size: 1.2em; border-radius: 6px; border: none; background: #1976d2; color: #fff; cursor: pointer; transition: background 0.2s; }
+        .move-btns button:hover { background: #125ea2; }
+        .result-list { display: flex; flex-wrap: wrap; gap: 24px; margin: 24px 0; justify-content: center; }
+        .ar-card { background: #f7fafd; border-radius: 12px; box-shadow: 0 2px 8px #0001; padding: 18px; text-align: center; }
+        .ar-card img { max-width: 340px; border-radius: 10px; box-shadow: 0 1px 8px #0002; background: #fff; }
+        .ar-card .ar-btns { margin: 10px 0 0 0; }
+        .ar-card .ar-btns button { font-size: 1em; padding: 4px 12px; margin: 0 2px; }
+        .btn { background: #1976d2; color: #fff; border: none; border-radius: 6px; padding: 8px 24px; font-size: 1em; cursor: pointer; margin: 18px 8px 0 0; }
+        .btn:hover { background: #125ea2; }
+        .back-btn { background: #fff; color: #1976d2; border: 2px solid #1976d2; }
+        .back-btn:hover { background: #e3eaf7; }
+        .ar-title { font-size: 1.1em; color: #333; margin: 10px 0 0 0; }
+        @media (max-width: 900px) {
+            .container { padding: 12px 2vw 12px 2vw; }
+            .ar-card img { max-width: 90vw; }
+        }
+    </style>
+    <script>
+    function downloadAll() {
+        const links = document.querySelectorAll('.result-list a');
+        for (let link of links) {
+            link.click();
+        }
+    }
+    function showShift(cardId, dir) {
+        var overlay = document.getElementById('ar-overlay-img-' + cardId);
+        // 兼容首次加载时src为空的情况
+        if (overlay && overlay.getAttribute('data-' + dir)) {
+            overlay.src = overlay.getAttribute('data-' + dir);
+        }
+    }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>棋盘格+二十面体/立方体 AR 实验结果</h1>
+        <div class="desc">
+            <b>实验说明：</b><br>
+            本实验基于摄像头/本地上传的棋盘格照片，自动完成相机标定、姿态估计与AR渲染。支持二十面体/立方体等几何体的AR展示，并可通过按钮实现AR物体在棋盘格上的上下左右平移。<br>
+            <b>展示：</b>下方为20-30幅不同角度和远近的AR图像，支持单张平移、切换、下载与批量下载。<br>
+            <span style="color:#888;">（点击“↑↓←→”可切换AR物体在棋盘格上的位置，点击图片可放大，点击“返回上传”可回到上传页面。）</span>
+        </div>
+        <div class="result-list">
+        {% for img_file in img_files %}
+            {% set base = img_file.rsplit('_center', 1)[0] %}
+            {% set ext = img_file.rsplit('.', 1)[1] %}
+            <div class="ar-card">
+                <div style="position:relative;">
+                    <img id="ar-overlay-img-{{ loop.index0 }}"
+                        src="{{ url_for('result_img', filename=img_file) }}"
+                        data-center="{{ url_for('result_img', filename=base ~ '_center.' ~ ext) }}"
+                        data-up="{{ url_for('result_img', filename=base ~ '_up.' ~ ext) }}"
+                        data-down="{{ url_for('result_img', filename=base ~ '_down.' ~ ext) }}"
+                        data-left="{{ url_for('result_img', filename=base ~ '_left.' ~ ext) }}"
+                        data-right="{{ url_for('result_img', filename=base ~ '_right.' ~ ext) }}"
+                        style="max-width:340px;position:relative;z-index:2;pointer-events:auto;cursor:pointer;"
+                        onclick="window.open(this.src, '_blank');">
+                </div>
+                <div class="ar-btns">
+                    <button type="button" onclick="showShift('{{ loop.index0 }}', 'up')">↑</button>
+                    <button type="button" onclick="showShift('{{ loop.index0 }}', 'left')">←</button>
+                    <button type="button" onclick="showShift('{{ loop.index0 }}', 'down')">↓</button>
+                    <button type="button" onclick="showShift('{{ loop.index0 }}', 'right')">→</button>
+                    <button type="button" onclick="showShift('{{ loop.index0 }}', 'center')">回到中心</button>
+                    <a href="{{ url_for('result_img', filename=img_file) }}" download class="btn" style="padding:4px 12px;font-size:1em;">下载</a>
+                </div>
+                <div class="ar-title">AR渲染图 {{ loop.index }}</div>
+            </div>
+        {% endfor %}
+        </div>
+        <button class="btn" onclick="downloadAll()">批量下载全部结果</button>
+        <a class="btn back-btn" href="/">返回上传</a>
+    </div>
+</body>
+</html>
