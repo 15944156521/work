@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/android pj/Music player/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.29010416666666666" />
+        <entry key="..\:/android pj/Music player/app/src/main/res/drawable/button_style.xml" value="0.29010416666666666" />
+        <entry key="..\:/android pj/Music player/app/src/main/res/drawable/edit_style.xml" value="0.29010416666666666" />
+        <entry key="..\:/android pj/Music player/app/src/main/res/drawable/ic_launcher_background.xml" value="0.29010416666666666" />
+        <entry key="..\:/android pj/Music player/app/src/main/res/drawable/item_gridbg.xml" value="0.29010416666666666" />
+        <entry key="..\:/android pj/Music player/app/src/main/res/drawable/menu_text.xml" value="0.29010416666666666" />
+        <entry key="..\:/android pj/Music player/app/src/main/res/drawable/text_style.xml" value="0.29010416666666666" />
+        <entry key="..\:/android pj/Music player/app/src/main/res/layout/activity_login.xml" value="0.7148058252427184" />
+        <entry key="..\:/android pj/Music player/app/src/main/res/layout/activity_main.xml" value="0.2667572463768116" />
+        <entry key="..\:/android pj/Music player/app/src/main/res/layout/activity_music.xml" value="0.27395833333333336" />
+        <entry key="..\:/android pj/Music player/app/src/main/res/layout/activity_register.xml" value="0.27395833333333336" />
+        <entry key="..\:/android pj/Music player/app/src/main/res/layout/activity_singer_desc.xml" value="0.2708333333333333" />
+        <entry key="..\:/android pj/Music player/app/src/main/res/layout/item_music.xml" value="0.2708333333333333" />
+        <entry key="..\:/android pj/Music player/app/src/main/res/layout/item_singergrid.xml" value="0.2708333333333333" />
+        <entry key="..\:/android pj/Music player/app/src/main/res/layout/music_list.xml" value="0.2708333333333333" />
+        <entry key="..\:/android pj/Music player/app/src/main/res/layout/singer_page.xml" value="0.2708333333333333" />
+        <entry key="..\:/android pj/Music player/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.2869791666666667" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_21" default="true" project-jdk-name="jbr-21" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
